@@ -1,17 +1,21 @@
-import React, { useState, useEffect } from "react";
+//src/components/PoolInfo.js
+import React, { useState, useEffect, useRef } from "react";
 import { ethers } from "ethers";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import {
+  Box,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
 
-function PoolInfo({ contract }) {
+function PoolInfo({ contract, refreshPools }) {
   const [pools, setPools] = useState([]);
+  const tableRef = useRef(null); // 创建 ref 以引用表格
 
   useEffect(() => {
     async function fetchPools() {
@@ -26,13 +30,16 @@ function PoolInfo({ contract }) {
             })
           );
           setPools(poolsInfo);
+          if (tableRef.current) {
+            tableRef.current.scrollIntoView({ behavior: "smooth" });
+          }
         } catch (error) {
           console.error("Failed to fetch pools:", error);
         }
       }
     }
     fetchPools();
-  }, [contract]);
+  }, [contract, refreshPools]);
 
   return (
     <Box sx={{ my: 4 }}>
@@ -40,13 +47,13 @@ function PoolInfo({ contract }) {
         Pool Information
       </Typography>
       <TableContainer component={Paper}>
-        <Table>
+        <Table ref={tableRef}>
           <TableHead>
             <TableRow>
-              <TableCell>Token 0</TableCell>
-              <TableCell>Token 1</TableCell>
-              <TableCell>Reserve 0</TableCell>
-              <TableCell>Reserve 1</TableCell>
+              <TableCell>Token A</TableCell>
+              <TableCell>Token B</TableCell>
+              <TableCell>Reserve A</TableCell>
+              <TableCell>Reserve B</TableCell>
               <TableCell>Total Shares</TableCell>
             </TableRow>
           </TableHead>

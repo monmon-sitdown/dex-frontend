@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import { Button, TextField, Box, Typography } from "@mui/material";
 
 function SwapInterface({ contract }) {
   const [tokenIn, setTokenIn] = useState("");
