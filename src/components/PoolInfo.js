@@ -12,6 +12,7 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
+import tokenList from "../tokenList";
 
 function PoolInfo({ contract, refreshPools }) {
   const [pools, setPools] = useState([]);
@@ -41,6 +42,13 @@ function PoolInfo({ contract, refreshPools }) {
     fetchPools();
   }, [contract, refreshPools]);
 
+  function getTokenName(address) {
+    const token = tokenList.find(
+      (t) => t.address.toLowerCase() === address.toLowerCase()
+    );
+    return token ? token.name : address;
+  }
+
   return (
     <Box sx={{ my: 4 }}>
       <Typography variant="h5" component="h2" gutterBottom>
@@ -50,23 +58,31 @@ function PoolInfo({ contract, refreshPools }) {
         <Table ref={tableRef}>
           <TableHead>
             <TableRow>
-              <TableCell>Token A</TableCell>
-              <TableCell>Token B</TableCell>
-              <TableCell>Reserve A</TableCell>
-              <TableCell>Reserve B</TableCell>
+              <TableCell>Pool Name</TableCell>
               <TableCell>Total Shares</TableCell>
+              <TableCell>Token 0</TableCell>
+              <TableCell>Reserve 0</TableCell>
+              <TableCell>Token 1</TableCell>
+              <TableCell>Reserve 1</TableCell>
+              <TableCell>Token 0 Address</TableCell>
+              <TableCell>Token 1 Address</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {pools.map((pool, index) => (
               <TableRow key={index}>
-                <TableCell>{pool.token0}</TableCell>
-                <TableCell>{pool.token1}</TableCell>
-                <TableCell>{ethers.utils.formatEther(pool.reserve0)}</TableCell>
-                <TableCell>{ethers.utils.formatEther(pool.reserve1)}</TableCell>
+                <TableCell>
+                  {`${getTokenName(pool.token0)}-${getTokenName(pool.token1)}`}
+                </TableCell>
                 <TableCell>
                   {ethers.utils.formatEther(pool.totalShares)}
                 </TableCell>
+                <TableCell>{getTokenName(pool.token0)}</TableCell>
+                <TableCell>{ethers.utils.formatEther(pool.reserve0)}</TableCell>
+                <TableCell>{getTokenName(pool.token1)}</TableCell>
+                <TableCell>{ethers.utils.formatEther(pool.reserve1)}</TableCell>
+                <TableCell>{pool.token0}</TableCell>
+                <TableCell>{pool.token1}</TableCell>
               </TableRow>
             ))}
           </TableBody>

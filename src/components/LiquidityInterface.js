@@ -22,6 +22,29 @@ function LiquidityInterface({ contract, onPoolCreated }) {
   const [amountB, setAmountB] = useState("");
   const [error, setError] = useState("");
 
+  const checkIfPoolExists = async (tokenA, tokenB) => {
+    try {
+      // Ensure that tokenA is always less than tokenB for comparison
+      if (tokenA > tokenB) {
+        [tokenA, tokenB] = [tokenB, tokenA];
+      }
+
+      const poolPairs = await contract.getAllPoolPairs();
+      for (const [pairTokenA, pairTokenB] of poolPairs) {
+        if (
+          (pairTokenA === tokenA && pairTokenB === tokenB) ||
+          (pairTokenA === tokenB && pairTokenB === tokenA)
+        ) {
+          return true; // Pool exists
+        }
+      }
+      return false; // Pool does not exist
+    } catch (error) {
+      console.error("Failed to check if pool exists:", error);
+      return false;
+    }
+  };
+
   // 获取当前未选择的代币列表
   const availableTokensForB = tokenList.filter(
     (token) => token.address !== tokenA
@@ -30,6 +53,17 @@ function LiquidityInterface({ contract, onPoolCreated }) {
   async function handleAddLiquidity() {
     if (!contract || !tokenA || !tokenB || !amountA || !amountB) {
       setError("Please fill all fields");
+      return;
+    }
+
+    if (parseFloat(amountA) <= 0 || parseFloat(amountB) <= 0) {
+      setError("Amount 0 and Amount 1 must be greater than 0");
+      return;
+    }
+
+    const poolExists = await checkIfPoolExists(tokenA, tokenB);
+    if (!poolExists) {
+      setError("This pool doesn't exist!");
       return;
     }
 
@@ -69,7 +103,7 @@ function LiquidityInterface({ contract, onPoolCreated }) {
         Add Liquidity
       </Typography>
       <FormControl fullWidth margin="normal">
-        <InputLabel>Token A</InputLabel>
+        <InputLabel>Token 0</InputLabel>
         <Select
           value={tokenA}
           onChange={(e) => {
@@ -91,15 +125,21 @@ function LiquidityInterface({ contract, onPoolCreated }) {
       </FormControl>
       <TextField
         fullWidth
-        label="Amount A"
+        label="Amount 0"
         type="number"
         value={amountA}
         onChange={(e) => setAmountA(e.target.value)}
         margin="normal"
+        error={parseFloat(amountA) <= 0 && amountA !== ""}
+        helperText={
+          parseFloat(amountA) <= 0 && amountA !== ""
+            ? "Amount 0 must be greater than 0"
+            : ""
+        }
       />
 
       <FormControl fullWidth margin="normal">
-        <InputLabel>Token B</InputLabel>
+        <InputLabel>Token 1</InputLabel>
         <Select
           value={tokenB}
           onChange={(e) => setTokenB(e.target.value)}
@@ -116,11 +156,17 @@ function LiquidityInterface({ contract, onPoolCreated }) {
 
       <TextField
         fullWidth
-        label="Amount B"
+        label="Amount 1"
         type="number"
         value={amountB}
         onChange={(e) => setAmountB(e.target.value)}
         margin="normal"
+        error={parseFloat(amountB) <= 0 && amountB !== ""}
+        helperText={
+          parseFloat(amountB) <= 0 && amountB !== ""
+            ? "Amount 1 must be greater than 0"
+            : ""
+        }
       />
       <Button variant="contained" onClick={handleAddLiquidity} sx={{ mt: 2 }}>
         Add Liquidity
