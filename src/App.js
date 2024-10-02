@@ -19,6 +19,8 @@ import LiquidityInterface from "./components/LiquidityInterface";
 import PoolInfo from "./components/PoolInfo";
 import UserPositions from "./components/UserPositions";
 import DEXPlatformABI from "./DexPlatform.abi.json";
+import RemoveLiquidityInterface from "./components/RemoveLiquidityInterface";
+import TokenPrice from "./components/TokenPrice";
 
 const theme = createTheme({
   palette: {
@@ -46,7 +48,7 @@ function App() {
   useEffect(() => {
     if (provider && account) {
       const signer = provider.getSigner(account);
-      const contractAddress = "0x46D7cb0f4DD857127354bD5EcAb75C06E88Ca373";
+      const contractAddress = "0x3D484E9E3f7c0ffcDE03315A5d6fc81C510b636F";
       const dexContract = new ethers.Contract(
         contractAddress,
         DEXPlatformABI,
@@ -120,6 +122,10 @@ function App() {
     setRefreshPools(true); // Trigger refresh
   };
 
+  const handleRemoveLiquidity = () => {
+    setRefreshPools(true); // Trigger refresh
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -158,6 +164,11 @@ function App() {
                 onPoolCreated={handleAddLiquidity}
               />
               <SwapInterface contract={contract} onSwaped={handleSwaped} />
+              <RemoveLiquidityInterface
+                contract={contract}
+                onLiquidityRemoved={handleRemoveLiquidity}
+              />
+              <TokenPrice contract={contract} />
               <UserPositions contract={contract} account={account} />
             </>
           ) : (

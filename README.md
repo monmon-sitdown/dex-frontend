@@ -1,70 +1,68 @@
-# Getting Started with Create React App
+# Simple DEX Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+The DEX Platform is a decentralized exchange (DEX) built using Ethereum smart contracts and the React framework. This application allows users to create liquidity pools, swap tokens, and check the pool information. The interface is built with Material-UI to provide a modern and responsive user experience.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **Connect/Disconnect Wallet**: Users can connect their Ethereum wallet (e.g., MetaMask) to interact with the DEX.
+- **Liquidity Pool Management**: Users can create new pools and add/remove liquidity.
+- **Token Swapping**: Users can swap tokens within the platform seamlessly.
+- **User Positions**: Users can view their positions and manage their investments effectively.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Getting Started
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Prerequisites
 
-### `npm test`
+- Node.js and npm installed on your machine.
+- An Ethereum wallet (like MetaMask) installed and configured.
+- A local Ethereum test network (e.g., Ganache) or a testnet (e.g., Rinkeby, Goerli).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Installation
 
-### `npm run build`
+1. Clone the repository:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+git clone https://github.com/monmon-sitdown/dex-frontend.git
+cd dex-frontend
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Install the dependencies:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+npm install
+```
 
-### `npm run eject`
+3. Start the application:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+npm start
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+4. Open your browser and go to http://localhost:3000.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Contract Deployment
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Before using the DEX platform, ensure that the smart contract is deployed on the desired network. Update the `contractAddress` variable in the `App.js` file with your deployed contract address.
 
-## Learn More
+```
+const contractAddress = "0x3D484E9E3f7c0ffcDE03315A5d6fc81C510b636F"; // Replace with your contract address
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Components
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **CreatePool**: Component for creating new liquidity pools.
+- **SwapInterface**: Interface for swapping tokens between different pools.
+- **LiquidityInterface**: Component for adding and managing liquidity.
+- **RemoveLiquidityInterface**: Interface for removing liquidity from pools.
+- **PoolInfo**: Displays information about the current liquidity pools.
+- **UserPositions**: Shows the user's current positions and investments.
 
-### Code Splitting
+## Usage
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. **Connect Your Wallet**: Click the "Connect Wallet" button to connect your Ethereum wallet.
+2. **Create a Pool**: Use the "Create Pool" component to create a new liquidity pool.
+3. **Add Liquidity**: Add liquidity to your pools using the Liquidity Interface.
+4. **Swap Tokens**: Use the Swap Interface to swap between different tokens.
+5. **Manage User Positions**: View and manage your positions through the User Positions component.

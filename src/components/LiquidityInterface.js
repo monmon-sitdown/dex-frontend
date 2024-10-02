@@ -90,6 +90,31 @@ function LiquidityInterface({ contract, onPoolCreated }) {
     } catch (error) {
       console.error("Failed to add liquidity:", error);
       setError("Failed to add liquidity");
+      let errorMessage = "";
+
+      // 检查错误信息是否包含revert的错误
+      if (error.message.includes("revert")) {
+        // 如果包含revert错误，尝试解析自定义错误
+        if (error.data?.message) {
+          if (error.data.message.includes("Dex__PoolNoExisted")) {
+            errorMessage =
+              "The pool does not exist. Please create a pool first.";
+          } else if (
+            error.data.message.includes("Dex__InsufficientLiquidityMinted")
+          ) {
+            errorMessage =
+              "Insufficient liquidity minted. Please check your inputs.";
+          } else {
+            errorMessage = `An unexpected error occurred: ${error.data.message}`;
+          }
+        } else {
+          errorMessage = `Transaction reverted: ${error.message}`;
+        }
+      } else {
+        // 处理其他类型的错误
+        errorMessage = `An unexpected error occurred: ${error.message}`;
+      }
+      console.log(errorMessage);
     }
   }
 
