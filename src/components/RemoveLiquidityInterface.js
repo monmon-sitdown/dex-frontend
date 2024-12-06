@@ -21,7 +21,7 @@ function RemoveLiquidityInterface({ contract, onLiquidityRemoved }) {
   const [shares, setShares] = useState("");
   const [error, setError] = useState("");
 
-  // 获取当前未选择的代币列表
+  // Get the token list which was not chosen
   const availableTokensForToken1 = tokenList.filter(
     (token) => token.address !== token0
   );
@@ -33,10 +33,10 @@ function RemoveLiquidityInterface({ contract, onLiquidityRemoved }) {
     }
 
     try {
-      // 解析为 ether 单位
+      // change to ether unit
       const sharesParsed = ethers.utils.parseEther(shares);
 
-      // 调用合约函数撤回流动性
+      // Call the contract to removeliquidity
       const tx = await contract.removeLiquidity(token0, token1, sharesParsed);
       await tx.wait();
       console.log("Liquidity removed successfully");
@@ -66,7 +66,7 @@ function RemoveLiquidityInterface({ contract, onLiquidityRemoved }) {
           onChange={(e) => {
             const selectedToken0 = e.target.value;
             setToken0(selectedToken0);
-            // 重置 token1 为默认值，当 token0 更改时，token1 的选择应从未选择的代币中选择
+            // Reset token1 to default. When tokenA changed, token0 should be chosen in the unchosen list.
             if (token1 === selectedToken0) {
               setToken1("");
             }
@@ -86,7 +86,7 @@ function RemoveLiquidityInterface({ contract, onLiquidityRemoved }) {
           value={token1}
           onChange={(e) => setToken1(e.target.value)}
           label="Token 1"
-          disabled={!token0} // token0 未选择时禁用 token1 下拉列表
+          disabled={!token0} // When token0 is not determined, ban the drop menu of token1
         >
           {availableTokensForToken1.map((token) => (
             <MenuItem key={token.address} value={token.address}>

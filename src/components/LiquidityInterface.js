@@ -45,7 +45,7 @@ function LiquidityInterface({ contract, onPoolCreated }) {
     }
   };
 
-  // 获取当前未选择的代币列表
+  // Get the token list which was not chosen
   const availableTokensForB = tokenList.filter(
     (token) => token.address !== tokenA
   );
@@ -68,11 +68,59 @@ function LiquidityInterface({ contract, onPoolCreated }) {
     }
 
     try {
-      // 确保代币顺序一致
+      // Make sure the sequence of two tokens be correct
+      var amount0 = amountA;
+      var amount1 = amountB;
+      if (tokenA > tokenB) {
+        amount0 = amountB;
+        amount1 = amountA;
+      }
+
       const sortedTokens = [tokenA, tokenB].sort();
-      const [amountASorted, amountBSorted] = [amountA, amountB].map((amount) =>
+      const [amountASorted, amountBSorted] = [amount0, amount1].map((amount) =>
         ethers.utils.parseEther(amount)
       );
+
+      const isEmptyPool = await contract.isEmptyPool(
+        sortedTokens[0],
+        sortedTokens[1]
+      );
+
+      //console.log(isEmptyPool);
+
+      if (!isEmptyPool) {
+        //Check the ratio of pool
+        const inputAmountA = parseFloat(amount0);
+        const inputAmountB = parseFloat(amount1);
+        // Calculate pool ratio
+        const poolRatio =
+          (1.0 * 1e18) /
+          parseFloat(
+            await contract.getTokenPrice(sortedTokens[0], sortedTokens[1])
+          );
+
+        const inputRatio = inputAmountA / inputAmountB;
+        //console.log(poolRatio, inputRatio);
+
+        // error tolerance
+        const tolerance = 0.01; // 1%
+        //console.log(poolRatio * (1 - tolerance), poolRatio * (1 + tolerance));
+
+        //if (Math.abs(poolRatio - inputRatio) > tolerance) {
+        if (
+          poolRatio * (1 - tolerance) > inputRatio ||
+          inputRatio > poolRatio * (1 + tolerance)
+        ) {
+          setError(
+            `Your input amounts do not match the pool ratio. Current pool ratio: ${poolRatio.toFixed(
+              4
+            )}. Adjust your inputs accordingly.`
+          );
+          return;
+        }
+      }
+
+      // add Liquidity
 
       const tx = await contract.addLiquidity(
         sortedTokens[0],
@@ -80,6 +128,7 @@ function LiquidityInterface({ contract, onPoolCreated }) {
         amountASorted,
         amountBSorted
       );
+
       await tx.wait();
       console.log("Liquidity added successfully");
       onPoolCreated();
@@ -92,9 +141,9 @@ function LiquidityInterface({ contract, onPoolCreated }) {
       setError("Failed to add liquidity");
       let errorMessage = "";
 
-      // 检查错误信息是否包含revert的错误
+      // Check if error includes revert error
       if (error.message.includes("revert")) {
-        // 如果包含revert错误，尝试解析自定义错误
+        // if includes revert error, try to analyze the specific error
         if (error.data?.message) {
           if (error.data.message.includes("Dex__PoolNoExisted")) {
             errorMessage =
@@ -111,7 +160,7 @@ function LiquidityInterface({ contract, onPoolCreated }) {
           errorMessage = `Transaction reverted: ${error.message}`;
         }
       } else {
-        // 处理其他类型的错误
+        // Other type of errors
         errorMessage = `An unexpected error occurred: ${error.message}`;
       }
       console.log(errorMessage);
@@ -134,7 +183,7 @@ function LiquidityInterface({ contract, onPoolCreated }) {
           onChange={(e) => {
             const selectedTokenA = e.target.value;
             setTokenA(selectedTokenA);
-            // 重置 tokenB 为默认值，当 tokenA 更改时，tokenB 的选择应从未选择的代币中选择
+            // Reset tokenB to default. When tokenA changed, tokenB should be chosen in the unchosen list.
             if (tokenB === selectedTokenA) {
               setTokenB("");
             }
@@ -169,7 +218,7 @@ function LiquidityInterface({ contract, onPoolCreated }) {
           value={tokenB}
           onChange={(e) => setTokenB(e.target.value)}
           label="Token B"
-          disabled={!tokenA} // tokenA 未选择时禁用 tokenB 下拉列表
+          disabled={!tokenA} // When tokenA is not determined, ban the drop menu of tokenB
         >
           {availableTokensForB.map((token) => (
             <MenuItem key={token.address} value={token.address}>

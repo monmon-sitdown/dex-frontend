@@ -44,7 +44,7 @@ function SwapInterface({ contract, onSwaped }) {
     }
   };
 
-  // 获取当前未选择的代币列表
+  // Get the token list which was not chosen
   const availableTokensForB = tokenList.filter(
     (token) => token.address !== tokenIn
   );
@@ -61,17 +61,27 @@ function SwapInterface({ contract, onSwaped }) {
       return;
     }
 
+    console.log(tokenIn, tokenOut, amountIn, ethers.utils.parseEther(amountIn));
+
     try {
       const tx = await contract.swap(
         tokenIn,
         tokenOut,
-        ethers.utils.parseEther(amountIn)
+        ethers.utils.parseEther(amountIn),
+        { gasLimit: 500000 }
       );
       await tx.wait();
       console.log("Swap successful");
       onSwaped();
     } catch (error) {
       console.error("Swap failed:", error);
+      if (error.data && error.data.message) {
+        console.error("Error details:", error.data.message);
+      } else {
+        console.error("Unexpected error:", error.message);
+      }
+
+      setError("Swap failed. Please check the console for details.");
     }
   }
 
@@ -91,7 +101,7 @@ function SwapInterface({ contract, onSwaped }) {
           onChange={(e) => {
             const selectedTokenA = e.target.value;
             setTokenIn(selectedTokenA);
-            // 重置 tokenB 为默认值，当 tokenA 更改时，tokenB 的选择应从未选择的代币中选择
+            // Reset tokenB to default. When tokenA changed, tokenB should be chosen in the unchosen list.
             if (tokenOut === selectedTokenA) {
               setTokenOut("");
             }
@@ -111,7 +121,7 @@ function SwapInterface({ contract, onSwaped }) {
           value={tokenOut}
           onChange={(e) => setTokenOut(e.target.value)}
           label="Token Out"
-          disabled={!tokenIn} // tokenA 未选择时禁用 tokenB 下拉列表
+          disabled={!tokenIn} // When tokenA is not determined, ban the drop menu of tokenB
         >
           {availableTokensForB.map((token) => (
             <MenuItem key={token.address} value={token.address}>

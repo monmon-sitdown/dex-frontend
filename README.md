@@ -2,7 +2,7 @@
 
 ## Overview
 
-The DEX Platform is a decentralized exchange (DEX) built using Ethereum smart contracts and the React framework. This application allows users to create liquidity pools, swap tokens, and check the pool information. The interface is built with Material-UI to provide a modern and responsive user experience.
+The DEX Platform is a decentralized exchange (DEX) built using Ethereum smart contracts and the React framework. This application allows users to create liquidity pools, swap tokens, and check the pool information. The interface is built with Material-UI to provide a modern and responsive user experience. The Project also can be found at https://simple-dexplatform.netlify.app
 
 ## Features
 
@@ -18,29 +18,6 @@ The DEX Platform is a decentralized exchange (DEX) built using Ethereum smart co
 - Node.js and npm installed on your machine.
 - An Ethereum wallet (like MetaMask) installed and configured.
 - A local Ethereum test network (e.g., Ganache) or a testnet (e.g., Rinkeby, Goerli).
-
-### Installation
-
-1. Clone the repository:
-
-```
-git clone https://github.com/monmon-sitdown/dex-frontend.git
-cd dex-frontend
-```
-
-2. Install the dependencies:
-
-```
-npm install
-```
-
-3. Start the application:
-
-```
-npm start
-```
-
-4. Open your browser and go to http://localhost:3000.
 
 ### Contract Deployment
 

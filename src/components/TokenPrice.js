@@ -10,7 +10,7 @@ function TokenPrice({ contract }) {
     async function fetchPrice() {
       if (contract) {
         try {
-          const price = await contract.getPrice(); // 假设合约有这个方法
+          const price = await contract.getTokenPrice();
           setPrice(ethers.utils.formatUnits(price, 18));
         } catch (error) {
           console.error("Failed to fetch price:", error);

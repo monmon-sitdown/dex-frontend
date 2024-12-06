@@ -16,7 +16,7 @@ import tokenList from "../tokenList";
 
 function PoolInfo({ contract, refreshPools }) {
   const [pools, setPools] = useState([]);
-  const tableRef = useRef(null); // 创建 ref 以引用表格
+  const tableRef = useRef(null); // Create ref to refer the table
 
   useEffect(() => {
     async function fetchPools() {

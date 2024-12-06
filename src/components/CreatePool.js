@@ -8,7 +8,7 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
-import tokenList from "../tokenList"; // 引入代币列表
+import tokenList from "../tokenList"; // import the list of token names
 
 function CreatePool({ contract, onPoolCreated }) {
   const [tokenA, setTokenA] = useState("");
@@ -17,7 +17,7 @@ function CreatePool({ contract, onPoolCreated }) {
 
   const checkIfPoolExists = async (tokenA, tokenB) => {
     try {
-      // Ensure that tokenA is always less than tokenB for comparison
+      // Ensure that address of tokenA is always less than tokenB for comparison
       if (tokenA > tokenB) {
         [tokenA, tokenB] = [tokenB, tokenA];
       }
@@ -38,7 +38,7 @@ function CreatePool({ contract, onPoolCreated }) {
     }
   };
 
-  // 获取当前未选择的代币列表
+  // Get the token list which was not chosen
   const availableTokensForB = tokenList.filter(
     (token) => token.address !== tokenA
   );
@@ -58,11 +58,11 @@ function CreatePool({ contract, onPoolCreated }) {
     }
 
     try {
-      // 调用合约中的创建流动性池函数
+      // Call the createPool function in the contract
       const tx = await contract.createPool(tokenA, tokenB);
       await tx.wait();
       console.log("Liquidity pool created successfully.");
-      // 刷新 PoolInfo 数据
+      // Update PoolInfo data
       onPoolCreated();
     } catch (error) {
       console.error("Failed to create liquidity pool:", error);
@@ -81,7 +81,7 @@ function CreatePool({ contract, onPoolCreated }) {
           onChange={(e) => {
             const selectedTokenA = e.target.value;
             setTokenA(selectedTokenA);
-            // 重置 tokenB 为默认值，当 tokenA 更改时，tokenB 的选择应从未选择的代币中选择
+            // Reset tokenB to default. When tokenA changed, tokenB should be chosen in the unchosen list.
             if (tokenB === selectedTokenA) {
               setTokenB("");
             }
@@ -101,7 +101,7 @@ function CreatePool({ contract, onPoolCreated }) {
           value={tokenB}
           onChange={(e) => setTokenB(e.target.value)}
           label="Token B"
-          disabled={!tokenA} // tokenA 未选择时禁用 tokenB 下拉列表
+          disabled={!tokenA} // When tokenA is not determined, ban the drop menu of tokenB
         >
           {availableTokensForB.map((token) => (
             <MenuItem key={token.address} value={token.address}>
